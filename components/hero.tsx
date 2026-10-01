@@ -135,26 +135,20 @@ export function Hero() {
           </p>
 
           <div className='mt-9 w-full max-w-lg'>
-            <div
-              className='flex items-center gap-3 rounded-lg border px-4 py-3'
-              style={{
-                borderColor: 'var(--border-secondary)',
-                background: 'var(--color-plate)',
-              }}
-            >
-              <span className='select-none text-[var(--text-muted)]'>$</span>
+            <div className='code-surface flex items-center gap-3 px-4 py-3'>
+              <span className='code-prompt select-none'>$</span>
               <code className='mono truncate text-[13px]'>
-                <span className='text-[var(--text-muted)]'>curl </span>
-                <span className='text-[var(--color-accent)]'>
+                <span className='code-comment'>curl </span>
+                <span className='code-command'>
                   -fsSL https://sandbase.ai/install.sh
                 </span>
-                <span className='text-[var(--text-muted)]'> | sh</span>
+                <span className='code-comment'> | sh</span>
               </code>
               <button
                 type='button'
                 onClick={copy}
                 aria-label='Copy install command'
-                className='ml-auto shrink-0 text-[var(--text-muted)] transition-colors hover:text-[var(--color-accent)]'
+                className='code-prompt ml-auto shrink-0 transition-colors hover:text-[var(--code-accent)]'
               >
                 {copied ? (
                   <svg

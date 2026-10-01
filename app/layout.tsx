@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { JetBrains_Mono } from 'next/font/google'
 
+import { themeInitScript } from '@/components/theme-toggle'
 import { TOTAL_ENDPOINTS } from '@/lib/vendors'
 
 import './globals.css'
@@ -24,8 +25,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang='en'>
+    // Light is the default, matching sandbase.ai. The inline script below
+    // rewrites this before paint if the visitor chose dark.
+    <html lang='en' data-theme='light' suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         {/*
           Clash Grotesk is self-hosted from /public (see globals.css), matching
           the live site. Only JetBrains Mono comes from Google Fonts here, so

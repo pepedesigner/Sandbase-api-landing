@@ -62,17 +62,9 @@ export function Ways() {
               <p className='mt-3 flex-1 text-[14px] leading-relaxed text-[var(--text-secondary)]'>
                 {way.body}
               </p>
-              <div
-                className='mono mt-5 flex items-center gap-2 overflow-hidden rounded-md border px-3 py-2.5'
-                style={{
-                  borderColor: 'var(--border-primary)',
-                  background: 'var(--color-plate)',
-                }}
-              >
-                <span className='shrink-0 select-none text-[var(--text-muted)]'>
-                  $
-                </span>
-                <code className='truncate text-[11.5px] text-[var(--color-accent)]'>
+              <div className='code-surface mono mt-5 flex items-center gap-2 overflow-hidden rounded-md px-3 py-2.5'>
+                <span className='code-prompt shrink-0 select-none'>$</span>
+                <code className='code-command truncate text-[11.5px]'>
                   {way.cmd}
                 </code>
               </div>
@@ -148,7 +140,7 @@ export function Pricing() {
                 tier.highlight
                   ? {
                       borderColor: 'var(--border-accent)',
-                      background: 'var(--color-plate)',
+                      background: 'var(--color-surface-alt)',
                     }
                   : undefined
               }
@@ -306,7 +298,7 @@ export function Cta() {
           className='relative overflow-hidden rounded-lg border px-6 py-14 text-center md:px-12'
           style={{
             borderColor: 'var(--border-primary)',
-            background: 'var(--color-plate)',
+            background: 'var(--color-surface-alt)',
           }}
         >
           <div

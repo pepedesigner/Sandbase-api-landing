@@ -40,7 +40,10 @@ export function VendorLogo({
     <span
       aria-hidden='true'
       className='mono grid size-[22px] shrink-0 place-items-center text-[10px] font-bold'
-      style={{ background: 'var(--color-panel)', color: 'var(--color-accent)' }}
+      style={{
+        background: 'var(--color-panel)',
+        color: 'var(--color-panel-fg)',
+      }}
     >
       {name.slice(0, 2).toUpperCase()}
     </span>

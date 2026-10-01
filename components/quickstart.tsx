@@ -157,11 +157,7 @@ export function Quickstart() {
           {/* Code + output */}
           <div
             ref={stepRef}
-            className='overflow-hidden rounded-lg border'
-            style={{
-              borderColor: 'var(--border-primary)',
-              background: 'var(--color-plate)',
-            }}
+            className='code-surface overflow-hidden rounded-lg border'
           >
             <div
               className='flex items-center gap-2 border-b px-4 py-2.5'
@@ -174,7 +170,7 @@ export function Quickstart() {
                   style={{ background: c }}
                 />
               ))}
-              <span className='mono ml-2 text-[11px] text-[var(--text-muted)]'>
+              <span className='mono code-comment ml-2 text-[11px]'>
                 {step.lang}
               </span>
             </div>
@@ -187,7 +183,7 @@ export function Quickstart() {
               className='border-t px-4 py-3'
               style={{
                 borderColor: 'var(--border-primary)',
-                background: 'var(--color-canvas)',
+                background: 'rgba(0, 0, 0, 0.25)',
               }}
             >
               {step.output.map((line, i) => (
@@ -196,10 +192,10 @@ export function Quickstart() {
                   className='mono text-[12px] leading-[1.9]'
                   style={{
                     color: line.accent
-                      ? 'var(--color-accent)'
+                      ? 'var(--code-accent)'
                       : line.dim
-                        ? 'var(--text-muted)'
-                        : 'var(--text-secondary)',
+                        ? 'var(--code-muted)'
+                        : 'var(--code-fg)',
                   }}
                 >
                   {line.text}

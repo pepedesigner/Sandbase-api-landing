@@ -5,9 +5,10 @@ endpoints across 30 platforms**, every one priced, reachable from a product or a
 behind a single key.
 
 The layout borrows its hero treatment from [monid.ai](https://monid.ai) while staying
-inside SandBase's own design system.
+inside SandBase's own design system. Both of the live site's themes are implemented —
+**light is the default**, matching sandbase.ai, with a header toggle for dark.
 
-![SandBase APIs hero](docs/images/hero.png)
+![SandBase APIs hero, light theme](docs/images/hero.png)
 
 ---
 
@@ -32,26 +33,55 @@ Built with **Next.js 15** (App Router), **React 19**, **TypeScript** and **Tailw
 ## Design system
 
 Every colour, font and spacing value is taken from sandbase.ai's compiled stylesheet
-(`/_next/static/css/*.css`, the `:root` block) rather than eyeballed. The live
-`html[data-theme=dark]` block is byte-identical to `:root`, so dark is the only theme.
+(`/_next/static/css/*.css`) rather than eyeballed, for **both** of its themes.
 
-| Token | Value | Use |
+| Token | Light (default) | Dark | Use |
+| --- | --- | --- | --- |
+| `--color-canvas` | `#f2f0f3` | `#0e0b1a` | Page background |
+| `--color-surface` / `--bg-card` | `#fff` | `#241d44` | Cards |
+| `--color-surface-alt` | `#e7e4ea` | `#2e2656` | Announcement bar, highlighted tier, CTA panel |
+| `--color-ink` | `#0e0b1a` | `#f2f0f3` | Body text |
+| `--color-accent` | `#6a4cff` | `#d9ff43` | Eyebrows, links |
+| `--button-primary-bg` | `#11110f` | `#d9ff43` | Primary button fill |
+| `--border-primary` | `#dbd8df` | `#332d4f` | Hairlines |
+
+Tokens live in three deliberate layers:
+
+| Layer | Location | Purpose |
 | --- | --- | --- |
-| `--color-canvas` | `#0e0b1a` | Page background |
-| `--color-surface` | `#241d44` | Cards |
-| `--color-plate` | `#1e1936` | Filter rail, inset panels |
-| `--color-panel` | `#3a3070` | Monogram tiles |
-| `--color-accent` | `#d9ff43` | Lime accent, eyebrows, CTAs |
-| `--color-tint-cyan` | `#8b6fff` | Purple tint |
+| `@theme` | `app/globals.css` | Tailwind-facing aliases only — `font-sans`, `font-mono`, fluid spacing |
+| Structural `:root` | `app/globals.css` | Theme-invariant: fonts, radii, layout rhythm, `--code-*` |
+| Theme blocks | `:root` (light) and `[data-theme='dark']` | Everything that flips between themes |
 
-Tokens live in two deliberately disjoint places:
+The lists are disjoint, so a value can never drift between two declarations.
 
-| Location | Purpose |
-| --- | --- |
-| `@theme` (`app/globals.css`) | Tailwind-facing aliases only — `font-sans`, `font-mono`, fluid spacing |
-| `:root` (`app/globals.css`) | Everything else, consumed as `var(--token)` |
+#### Reading the live site
 
-Keeping the lists disjoint means a value can never drift between two declarations.
+sandbase.ai runs **two** themes and **defaults to light**: `html` ships with
+`data-theme="light"` and `.light-mode`, and `--color-canvas` resolves to `#f2f0f3`. Its
+`:root` block happens to hold the *dark* values, with light layered on via `.light-mode`.
+This project inverts that for a simpler cascade — `:root` carries light (the default) and
+`[data-theme='dark']` overrides — which produces the same result with one less class to
+keep in sync.
+
+**The accent flips with the theme.** Lime `#d9ff43` is the *dark* accent; light mode uses
+purple `#6a4cff` with a near-black primary button. Anything hardcoding lime would break
+light mode, so components must go through `--color-accent` / `--button-primary-*` rather
+than literal values.
+
+#### Theme switching
+
+`components/theme-toggle.tsx` exports the header toggle, a `useTheme` hook, and
+`themeInitScript` — a blocking inline script that stamps `data-theme` on `<html>` before
+first paint so the page never flashes the wrong theme. Resolution order is stored choice →
+`prefers-color-scheme` → light.
+
+#### Code surfaces stay dark
+
+Terminal and command blocks keep a dark background in both themes (`--code-bg`); the live
+light theme does the same, setting `--color-plate` to near-black for exactly this purpose.
+The `--code-*` tokens are declared once, not per theme, so a command box can never invert
+into a pale block with unreadable syntax colours.
 
 ### Visual language
 
@@ -120,6 +150,7 @@ app/
   globals.css       design tokens, primitives, marquee animation
 components/
   primitives.tsx    logo, announcement bar, header, footer, section header
+  theme-toggle.tsx  header toggle, useTheme hook, pre-paint init script
   hero.tsx          hero copy + monid-style scrolling tool wall
   catalog.tsx       search / category filter / sort / grid-list toggle
   quickstart.tsx    Discover → Run → In an agent, with simulated output
@@ -156,8 +187,14 @@ carry `min-w-0` so those strings truncate instead of pushing the page wide.
 
 ## Screenshots
 
-Two are checked in under `docs/images/`. The full set, captured at 1440×900 and 390×844,
-lives in `.preview/` (git-ignored).
+Two themes, light first (the default):
+
+| Light | Dark |
+| --- | --- |
+| ![Hero, light](docs/images/hero.png) | ![Hero, dark](docs/images/hero-dark.png) |
+
+The catalog and the full set, captured at 1440×900 and 390×844, live in `.preview/`
+(git-ignored).
 
 ---
 

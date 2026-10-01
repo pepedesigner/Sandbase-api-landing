@@ -2,10 +2,19 @@
 
 /*
  * Design tokens extracted verbatim from sandbase.ai's compiled CSS
- * (/_next/static/css/c6e96cc1a1826c14.css, :root block).
+ * (/_next/static/css/c6e96cc1a1826c14.css).
  *
- * Dark is the default and only theme: the live site's `html[data-theme=dark]`
- * block is byte-identical to `:root`, so there is no light variant to mirror.
+ * The live site runs two themes and defaults to LIGHT — `html` ships with
+ * `data-theme="light"` and `.light-mode`, and `--color-canvas` resolves to
+ * #f2f0f3. Its `:root` block happens to hold the dark values, with light
+ * layered on via `.light-mode`. Here that is inverted for a simpler cascade:
+ * `:root` carries the light values (the default) and `[data-theme='dark']`
+ * overrides them. Same result, one less class to keep in sync.
+ *
+ * Note the accent flips with the theme: lime #d9ff43 is the DARK accent, while
+ * light mode uses purple #6a4cff and a near-black primary button. Anything
+ * hardcoding lime would break light mode, so components must go through
+ * --color-accent / --button-primary-* rather than literal values.
  */
 
 /*
@@ -25,9 +34,9 @@
 
 /*
  * Tailwind-facing aliases. These feed utility generation (font-sans, font-mono,
- * and the fluid spacing scale). Every other token lives once in `:root` below
- * and is referenced as var(--token) from the component classes — keep the two
- * lists disjoint so a value can never drift between them.
+ * and the fluid spacing scale). Every other token lives once below and is
+ * referenced as var(--token) from the component classes — keep the two lists
+ * disjoint so a value can never drift between them.
  */
 @theme {
   --font-sans: 'Clash Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
@@ -41,51 +50,10 @@
   --spacing-panel: clamp(1.25rem, 2.2vw, 2rem);
 }
 
+/*
+ * Structural tokens — identical in both themes, so they are declared once.
+ */
 :root {
-  /* Surfaces */
-  --color-canvas: #0e0b1a;
-  --color-line: #332d4f;
-  --color-line-strong: #f2f0f3;
-  --color-plate: #1e1936;
-
-  /* Ink */
-  --color-ink: #f2f0f3;
-  --color-ink-muted: #a29ea9;
-  --color-ink-subtle: #8a8698;
-
-  /* Accent + panel */
-  --color-accent: #d9ff43;
-  --color-panel: #3a3070;
-
-  --bg-card: #241d44;
-  --bg-input: #241d44;
-  --bg-glass: rgba(30, 25, 54, 0.85);
-  --text-primary: #f2f0f3;
-  --text-secondary: #b3afc1;
-  --text-muted: #8a8698;
-  --text-placeholder: hsla(262, 6%, 64%, 0.55);
-  --border-primary: #332d4f;
-  --border-secondary: #3d3661;
-  --border-accent: #d9ff43;
-  --border-focus: rgba(217, 255, 67, 0.5);
-  --hover-overlay: hsla(0, 0%, 100%, 0.05);
-  --active-overlay: rgba(217, 255, 67, 0.16);
-
-  /* Buttons + glows */
-  --button-primary-bg: #d9ff43;
-  --button-primary-bg-hover: #e5ff78;
-  --button-primary-fg: #0e0b1a;
-  --glow-cyan: rgba(217, 255, 67, 0.08);
-  --glow-purple: rgba(139, 111, 255, 0.12);
-
-  --gradient-secondary: linear-gradient(136.975deg, #8b6fff, #d9ff43);
-
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 24px rgba(139, 111, 255, 0.2);
-
-  /* Status */
-
-  /* Typography */
   --font-family-heading: 'Clash Grotesk', 'Inter', -apple-system, BlinkMacSystemFont,
     'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Roboto, sans-serif;
   --font-family-body: 'Clash Grotesk', 'Inter', -apple-system, BlinkMacSystemFont,
@@ -99,23 +67,135 @@
   --line-height-body: 1.65;
   --line-height-heading: 1.2;
 
-  /* Layout */
   --page-gutter: clamp(1.25rem, 4vw, 3.5rem);
   --page-measure: 90rem;
   --page-block: clamp(2.75rem, 5vw, 5rem);
   --section-gap: clamp(2rem, 4vw, 4.5rem);
   --panel-padding: clamp(1.25rem, 2.2vw, 2rem);
 
-  /* Radii */
   /*
    * sandbase.ai draws everything square: cards, inputs, buttons, chips and
-   * tags all compute to `border-radius: 0px`. Only the round category pills are
-   * curved, and those use rounded-full directly rather than a token.
+   * tags all compute to `border-radius: 0px`.
    */
   --radius-sm: 0px;
   --radius-md: 0px;
   --radius-lg: 0px;
   --radius-full: 9999px;
+
+  /*
+   * Code and terminal surfaces stay dark in BOTH themes — the live light theme
+   * also sets --color-plate to near-black for exactly this purpose. Declared
+   * once here rather than per theme so a command box never inverts to a pale
+   * block with unreadable syntax colours.
+   */
+  --code-bg: #1e1936;
+  --code-fg: #f2f0f3;
+  --code-muted: #8a8698;
+  --code-accent: #d9ff43;
+}
+
+/*
+ * LIGHT — the live site's default theme.
+ */
+:root {
+  /* Surfaces */
+  --color-canvas: #f2f0f3;
+  --color-surface: #fff;
+  --color-surface-alt: #e7e4ea;
+  --color-line: #dbd8df;
+  --color-line-strong: #0e0b1a;
+  --color-plate: #0e0b1a;
+  --bg-card: #fff;
+  --bg-input: #fff;
+  --bg-glass: hsla(0, 0%, 100%, 0.88);
+
+  /* Ink */
+  --color-ink: #0e0b1a;
+  --color-ink-muted: #5d5969;
+  --color-ink-subtle: #757183;
+  --text-primary: #0e0b1a;
+  --text-secondary: #5d5969;
+  --text-muted: #757183;
+  --text-placeholder: rgba(93, 89, 105, 0.6);
+
+  /* Accent + panel */
+  --color-accent: #6a4cff;
+  --text-accent: #6a4cff;
+  --color-panel: #0e0b1a;
+  --color-panel-fg: #f2f0f3;
+  --color-panel-fg-muted: #a29ea9;
+  --border-accent: #6a4cff;
+
+  /* Borders */
+  --border-primary: #dbd8df;
+  --border-secondary: #c9c6d0;
+  --border-focus: rgba(106, 76, 255, 0.45);
+
+  /* Interaction */
+  --hover-overlay: rgba(17, 17, 15, 0.045);
+  --active-overlay: rgba(106, 76, 255, 0.1);
+  --button-primary-bg: #11110f;
+  --button-primary-bg-hover: #2a2926;
+  --button-primary-fg: #f3f1eb;
+
+  /* Glow + shadow */
+  --glow-cyan: rgba(217, 255, 67, 0.12);
+  --glow-purple: rgba(106, 76, 255, 0.08);
+  --shadow-md: 0 4px 12px rgba(17, 17, 15, 0.08);
+  --shadow-glow: 0 0 24px rgba(106, 76, 255, 0.12);
+  --gradient-secondary: linear-gradient(135deg, #6a4cff, #d9ff43);
+}
+
+/*
+ * DARK — opt-in, mirroring the live site's dark theme.
+ */
+[data-theme='dark'] {
+  /* Surfaces */
+  --color-canvas: #0e0b1a;
+  --color-surface: #241d44;
+  --color-surface-alt: #2e2656;
+  --color-line: #332d4f;
+  --color-line-strong: #f2f0f3;
+  --color-plate: #1e1936;
+  --bg-card: #241d44;
+  --bg-input: #241d44;
+  --bg-glass: rgba(30, 25, 54, 0.85);
+
+  /* Ink */
+  --color-ink: #f2f0f3;
+  --color-ink-muted: #a29ea9;
+  --color-ink-subtle: #8a8698;
+  --text-primary: #f2f0f3;
+  --text-secondary: #b3afc1;
+  --text-muted: #8a8698;
+  --text-placeholder: hsla(262, 6%, 64%, 0.55);
+
+  /* Accent + panel */
+  --color-accent: #d9ff43;
+  --text-accent: #d9ff43;
+  --color-panel: #3a3070;
+  --color-panel-fg: #f2f0f3;
+  --color-panel-fg-muted: #b3afc1;
+  --border-accent: #d9ff43;
+
+  /* Borders */
+  --border-primary: #332d4f;
+  --border-secondary: #3d3661;
+  --border-focus: rgba(217, 255, 67, 0.5);
+
+  /* Interaction */
+  --hover-overlay: hsla(0, 0%, 100%, 0.05);
+  --active-overlay: rgba(217, 255, 67, 0.16);
+  --button-primary-bg: #d9ff43;
+  --button-primary-bg-hover: #e5ff78;
+  --button-primary-fg: #0e0b1a;
+
+  /* Glow + shadow */
+  --glow-cyan: rgba(217, 255, 67, 0.08);
+  --glow-purple: rgba(139, 111, 255, 0.12);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 24px rgba(139, 111, 255, 0.2);
+  --gradient-secondary: linear-gradient(136.975deg, #8b6fff, #d9ff43);
 }
 
 * {
@@ -322,17 +402,38 @@ ol {
   line-height: 1.6;
 }
 
-/* Tag pill. */
+/*
+ * Tag pill. The live catalog draws these as transparent chips with a hairline
+ * border rather than filled blocks — a filled --color-plate would invert to a
+ * near-black slab in light mode and swallow the label.
+ */
 .tag {
   display: inline-flex;
   align-items: center;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border-primary);
-  background: var(--color-plate);
-  color: var(--color-ink-subtle);
+  background: transparent;
+  color: var(--color-ink-muted);
   font-family: var(--font-family-mono);
   font-size: 0.6875rem;
   padding: 0.125rem 0.4375rem;
+}
+
+/* ── Code surfaces (dark in both themes, see --code-* above) ── */
+
+.code-surface {
+  background: var(--code-bg);
+  border: 1px solid var(--border-primary);
+  color: var(--code-fg);
+}
+
+.code-surface .code-command {
+  color: var(--code-accent);
+}
+
+.code-surface .code-prompt,
+.code-surface .code-comment {
+  color: var(--code-muted);
 }
 
 /* ── Marquee (Hero tool wall) ── */

@@ -79,7 +79,7 @@ export function Catalog() {
               className='border p-4'
               style={{
                 borderColor: 'var(--border-primary)',
-                background: 'var(--color-plate)',
+                background: 'var(--bg-card)',
               }}
             >
               <div className='flex items-center justify-between'>
